@@ -1,3 +1,4 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from queue import Queue
@@ -16,9 +17,25 @@ def calculateStartEndTime(processBurstTime, elapsedTime):
     end = start + processBurstTime
     return start, end
 
-def addProcessToGranttChart(processExecution):
-    # Logic to generate Gantt Chart
-    print('Generating Gantt Chart...')
+def addProcessToGanttChart(processExecution):
+    processList.append(processExecution)
+
+def plotGanttChart(processList):
+    processIdList = [item[0] for item in processList]
+    processStartList = [item[1] for item in processList]
+    processEndList = [item[2] for item in processList]
+
+    df = pd.DataFrame({'Process': processIdList,
+                'start':processStartList,
+                'end': processEndList,
+                })
+    
+    df['process_duration'] = df['end'] - df['start']
+    print(df)
+
+    plt.barh(y=df['Process'], width=df['process_duration'], left=df['start'])
+    plt.imsave("fcfs.png", df)  
+    plt.show()  
 
 def executeFCFS(readyQueue:Queue):
     '''
@@ -38,17 +55,20 @@ def executeFCFS(readyQueue:Queue):
         start, end = calculateStartEndTime(processBurstTime, elapsedTime)
         processExecution = (processId, start, end)
 
-        addProcessToGranttChart(processExecution)
+        addProcessToGanttChart(processExecution)
         
         elapsedTime += processBurstTime
+    
+    plotGanttChart(processList)
 
 if __name__ == '__main__':
     numberProcess = int(input('How many process do you want to simulate FCFS algorithm?\t'))
     
-    readyQueue = Queue()
-    
+    readyQeue = Queue()
+    processList = []
+
     for process in range(numberProcess):
         burstTime = np.random.randint(low=0, high=20)
-        readyQueue.put((process+1, burstTime))
+        readyQeue.put((process+1, burstTime))
 
-    executeFCFS(readyQueue)
+    executeFCFS(readyQeue)
