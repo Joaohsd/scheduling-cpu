@@ -19,7 +19,7 @@ def calculateStartEndTime(processBurstTime, elapsedTime):
 
 def plotGanttChart():
     '''
-        Plot Grantt Chart for 
+        Plot Grantt Chart for processes
     '''
     processIdList = [item[0] for item in processExecutionList]
     processStartList = [item[1] for item in processExecutionList]
