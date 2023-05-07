@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from queue import Queue
 
 def calculateStartEndTime(processBurstTime, elapsedTime):
     '''
@@ -18,7 +20,7 @@ def addProcessToGranttChart(processExecution):
     # Logic to generate Gantt Chart
     print('Generating Gantt Chart...')
 
-def executeFCFS(readyQeue):
+def executeFCFS(readyQueue:Queue):
     '''
         Implementation of FCFS algorithm in order to execute process in ready qeue.
         args:
@@ -26,11 +28,16 @@ def executeFCFS(readyQeue):
                        and process burst time.
     '''
     elapsedTime = 0
-    for process in readyQeue:
+    while not readyQueue.empty():
+        # Get first element from Queue
+        process = readyQueue.get()
+        # Get information about process dequed
         processId = process[0]
         processBurstTime = process[1]
+        # Compute star and end of the process
         start, end = calculateStartEndTime(processBurstTime, elapsedTime)
         processExecution = (processId, start, end)
+
         addProcessToGranttChart(processExecution)
         
         elapsedTime += processBurstTime
@@ -38,10 +45,10 @@ def executeFCFS(readyQeue):
 if __name__ == '__main__':
     numberProcess = int(input('How many process do you want to simulate FCFS algorithm?\t'))
     
-    readyQeue = []
-
+    readyQueue = Queue()
+    
     for process in range(numberProcess):
-        burstTime = int(input(f'What is the burst time of the process {process+1}?\t'))
-        readyQeue.append((process+1, burstTime))
+        burstTime = np.random.randint(low=0, high=20)
+        readyQueue.put((process+1, burstTime))
 
-    executeFCFS(readyQeue)
+    executeFCFS(readyQueue)
